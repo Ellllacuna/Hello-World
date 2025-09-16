@@ -1,12 +1,6 @@
 # Overview
 
-This is a basic Hello World program made to demonstrate the use of Github,studio code, and Python integrated together.
-
-{Provide a description of your software}
-
-{Describe your purpose for creating this software.}
-
-{Provide a link to your YouTube demonstration.  It should be a one minute demo of the software running and a walkthrough of the code.}
+This is a basic Hello World program made to demonstrate the use of Github, studio code, and Python integrated together.
 
 [Software Demo Video](http://youtube.link.goes.here)
 
