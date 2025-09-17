@@ -2,7 +2,7 @@
 
 This is a basic Hello World program made to demonstrate the use of Github, studio code, and Python integrated together.
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/j9IVlIpnWks)
 
 # Development Environment
 
