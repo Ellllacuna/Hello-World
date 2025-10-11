@@ -1,11 +1,13 @@
 import arcade
+from arcade import PymunkPhysicsEngine
 from PIL import Image, ImageOps
+import random
 
 
 # Constants
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
-WINDOW_TITLE = "Platformer"
+WINDOW_TITLE = "Postal Puppy"
 
 WORLD_WIDTH = 2000
 WORLD_HEIGHT = 1000
@@ -94,7 +96,7 @@ class GameView(arcade.Window):
 
         self.scene.add_sprite("Player", self.player_sprite)
         self.scene.add_sprite_list("Walls", use_spatial_hash=True)
-        self.scene.add_sprite_list("Coins", use_spatial_hash=True)
+        self.scene.add_sprite_list("Mail", use_spatial_hash=True)
 
 
         self.camera = arcade.Camera2D()
@@ -111,10 +113,12 @@ class GameView(arcade.Window):
 
 
         platforms = [ #for floating platforms. Add as needed
-            [0,128,5],
-            [512,256,3]
+            [1620,300,5],
+            [512,256,3],[1100,650,5],
+            [800,400,4],
+            [400, 526, 2],[2000,500,7]
         ]
-        for x_start, y, length in platforms:
+        for right_x, y, length in platforms:
             for i in range(length):
                 if i == 0:
                     texture_file = "assets/Platform-1.png"
@@ -122,11 +126,12 @@ class GameView(arcade.Window):
                     texture_file = "assets/Platform-3.png"
                 else:
                     texture_file = "assets/Platform-2.png"
-        
-            wall = arcade.Sprite(texture_file, scale=1)
-            wall.center_x = x_start + i *64
-            wall.center_y = y
-            self.scene.add_sprite("Walls", wall)
+
+                tile_x = right_x - (length - 1 - i) * 64
+                wall = arcade.Sprite(texture_file, scale=1)
+                wall.center_x = tile_x
+                wall.center_y = y
+                self.scene.add_sprite("Walls", wall)
 
 
         #the floor
@@ -146,19 +151,63 @@ class GameView(arcade.Window):
             self.scene.add_sprite("Walls", floor_tile)
 
 
-
-        coordinate_list = [[512, 96], [256, 96], [768, 96]]
+        self.scene.add_sprite_list("Rocks", use_spatial_hash=False)
+        coordinate_list = [[512, 75], [256, 75], [768, 75],[750,440]]
         for coordinate in coordinate_list:
-            wall = arcade.Sprite(
-                ":resources:images/tiles/boxCrate_double.png", scale=TILE_SCALING)
-            wall.position = coordinate
-            self.scene.add_sprite("Walls", wall)
+            rock = arcade.Sprite(
+                "assets/Rock-2.png", scale=1)
+            rock.position = coordinate
+            self.scene.add_sprite("Rocks", rock)
+
+        floor_tile = arcade.Sprite("assets/Doghouse.png", scale = 2)
+        floor_tile.position = [65,85]
+        self.scene.add_sprite("Walls", floor_tile)
+
+        #mail
+
+        mail_textures = [
+            arcade.load_texture("assets/Mail-1.png"),
+            arcade.load_texture("assets/Mail-2.png"),
+            arcade.load_texture("assets/Mail-3.png")
+        ]
 
         for x in range(128, 1250, 256):
-            coin = arcade.Sprite(":resources:images/items/coinGold.png", scale=COIN_SCALING)
-            coin.center_x = x
-            coin.center_y = 96
-            self.scene.add_sprite("Coins", coin)
+            mail = AnimatedTile(mail_textures)
+            mail.center_x = x
+            mail.center_y = 90
+            self.scene.add_sprite("Mail", mail)
+
+        #foreground
+        
+        self.scene.add_sprite_list("Foreground", use_spatial_hash=False)
+
+        desired_scale = 0.47
+
+        grass_animation_1 = [
+            self.load_scaled_texture("assets/Grass-1-1.png", desired_scale),
+            self.load_scaled_texture("assets/Grass-1-2.png", desired_scale),
+            self.load_scaled_texture("assets/Grass-1-3.png", desired_scale),
+        ]
+
+        grass_animation_2 = [
+            self.load_scaled_texture("assets/Grass-2-1.png", desired_scale),
+            self.load_scaled_texture("assets/Grass-2-2.png", desired_scale),
+            self.load_scaled_texture("assets/Grass-2-3.png", desired_scale),
+        ]
+
+        for i in range(num_floor_tiles):
+            if i % 2 == 0:
+                textures = grass_animation_1
+            else:
+                textures = grass_animation_2
+            
+            grass_textures = textures
+            grass = AnimatedTile(grass_textures)
+            grass_scale = 0.5
+            grass.center_x = i * 64 + 32
+            grass.center_y = 32 + (grass.height) / 2 + 6.5
+            grass.update_interval = .5
+            self.scene.add_sprite("Foreground", grass) 
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, walls=self.scene["Walls"], gravity_constant = GRAVITY
@@ -169,6 +218,13 @@ class GameView(arcade.Window):
         image = Image.open(filename)
         flipped = ImageOps.mirror(image)
         return arcade.Texture(name=filename + "_flipped", image=flipped)
+    @staticmethod
+    def load_scaled_texture(filename, scale):
+        img = Image.open(filename)
+        new_width = int(img.width * scale)
+        new_height = int(img.height * scale)
+        img = img.resize((new_width, new_height))
+        return arcade.Texture(name=filename, image=img)
 
 
     def on_draw(self):
@@ -188,7 +244,7 @@ class GameView(arcade.Window):
 
         self.gui_camera.use()
         self.score_text.draw()
-        
+
     
     # from better keyboard
     def update_player_speed(self):
@@ -200,6 +256,12 @@ class GameView(arcade.Window):
         elif self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
             self.player_sprite.facing_direction = 0
+    
+        half_width = self.player_sprite.width / 2
+        if self.player_sprite.center_x < half_width:
+            self.player_sprite.center_x = half_width
+        elif self.player_sprite.center_x > WORLD_WIDTH - half_width:
+            self.player_sprite.center_x = WORLD_WIDTH - half_width
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
@@ -237,12 +299,18 @@ class GameView(arcade.Window):
         self.physics_engine.update()
         self.player_sprite.update_animation(delta_time)
 
-        coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene["Coins"]
+        for grass in self.scene["Foreground"]:
+            grass.update_animation(delta_time)
+
+        for mail in self.scene["Mail"]:
+            mail.update_animation(delta_time)
+
+        mail_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene["Mail"]
         )
 
-        for coin in coin_hit_list:
-            coin.remove_from_sprite_lists()
+        for mail in mail_hit_list:
+            mail.remove_from_sprite_lists()
             arcade.play_sound(self.collect_coin_sound)
             self.score += 75
             self.score_text.text = f"Score: {self.score}"
@@ -262,6 +330,22 @@ class GameView(arcade.Window):
         else:
             self.player_sprite.update_animation(delta_time)
             self.jump_texture_index = 0
+
+class AnimatedTile(arcade.Sprite):
+    def __init__(self, textures, update_interval=0.2):
+        super().__init__()
+        self.textures_list = textures
+        self.current_index = 0
+        self.update_interval = update_interval
+        self.timer = 0
+        self.texture = self.textures_list[0]
+
+    def update_animation(self, delta_time: float = 1/60):
+        self.timer += delta_time
+        if self.timer > self.update_interval:
+            self.current_index = (self.current_index + 1) % len(self.textures_list)
+            self.texture = self.textures_list[self.current_index]
+            self.timer = 0
 
 
 
