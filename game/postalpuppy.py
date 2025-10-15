@@ -126,7 +126,8 @@ class GameView(arcade.Window):
         bear = AnimatedTile(bear_textures, update_interval=1)
         bear.scale = 1.25
         bear.center_x = 1960
-        bear.center_y = 560
+        bear.center_y = 576
+        bear.angle = 7.4 #rotate the bear
         self.scene["NPCs"].append(bear)
         self.scene["Walls"].append(bear)
 
@@ -145,12 +146,13 @@ class GameView(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
 
-        self.gui_camera = arcade.Camera2D()
+        self.gui_camera = arcade.Camera2D() #gui camera for things that do not move on the screen (like score)
         self.score = 0
         self.score_text = arcade.Text(f"Score: {self.score}", x=0, y=5)
 
-        self.coord_text = arcade.Text("", x=700, y=500, color=arcade.color.BLACK)
-        self.instruction_text = arcade.Text("Deliver all the mail to the bear", x=500, y=1000, color=arcade.color.BLACK)
+        #for debugging purposes. Shows player coordinated
+        #self.coord_text = arcade.Text("", x=700, y=500, color=arcade.color.BLACK)
+        #self.instruction_text = arcade.Text("Deliver all the mail to the bear", x=500, y=1000, color=arcade.color.BLACK)
 
 
         platforms = [ #for floating platforms. Add as needed
@@ -160,6 +162,8 @@ class GameView(arcade.Window):
             [400, 526, 2],[2000,500,7],[1365,500,3]
 
         ]
+        # Collect platform tile positions so we can add grass on them later
+        platform_tile_positions = []
         for right_x, y, length in platforms:
             for i in range(length):
                 if i == 0:
@@ -174,6 +178,7 @@ class GameView(arcade.Window):
                 wall.center_x = tile_x
                 wall.center_y = y
                 self.scene.add_sprite("Walls", wall)
+                platform_tile_positions.append((tile_x, y))
 
 
         #the floor
@@ -273,6 +278,17 @@ class GameView(arcade.Window):
             grass.update_interval = .5
             self.scene.add_sprite("Foreground", grass) 
 
+        # Add animated grass to floating platform tiles collected earlier
+        for (px, py) in platform_tile_positions:
+            index = int(px // 64) #tells how many grass tiles can fit on a platform
+            textures = grass_animation_1 if index % 2 == 0 else grass_animation_2
+            grass = AnimatedTile(textures)
+            grass.center_x = px
+            grass.center_y = py + (grass.height) / 2 + 6.5
+            grass.update_interval = .5
+            self.scene.add_sprite("Foreground", grass)
+
+
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, walls=self.scene["Walls"], gravity_constant = GRAVITY
         )
@@ -300,8 +316,9 @@ class GameView(arcade.Window):
 
         self.gui_camera.use()
         self.score_text.draw()
-        self.coord_text.draw()
-        self.instruction_text.draw()
+        #enable to show coordinates (along with section in setup)
+        #self.coord_text.draw()
+        #self.instruction_text.draw()
 
         #for bear textbox
         if self.show_npc_text:
@@ -627,8 +644,8 @@ class GameView(arcade.Window):
             arcade.play_sound(self.collect_coin_sound)
             self.score += 75
             self.score_text.text = f"Score: {self.score}"
-
-        self.coord_text.text = f"X: {int(self.player_sprite.center_x)}, Y: {int(self.player_sprite.center_y)}"
+        #for debug. Other parts are in draw and setup
+        #self.coord_text.text = f"X: {int(self.player_sprite.center_x)}, Y: {int(self.player_sprite.center_y)}"
 
         #collision with walls and rocks
         walls_hit = arcade.check_for_collision_with_list(self.player_sprite, self.scene["Walls"])
