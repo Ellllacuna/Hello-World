@@ -346,6 +346,39 @@ class GameView(arcade.Window):
                     font_size= font_size,
                     font_name = "Pixelated Elegance"
                 )
+        
+        if self.show_end_screen:
+            screen_w, screen_h = self.get_size()
+
+            arcade.draw_lrbt_rectangle_filled(0,screen_w,1,screen_h, (0,0,0,180))
+
+            arcade.draw_text(
+                "Delivery Complete!",
+                screen_w / 2,
+                screen_h / 2 + 50,
+                color = arcade.color.WHITE,
+                font_size=36,
+                font_name="Pixelated Elegance",
+                anchor_x="center"
+            )
+            arcade.draw_text(
+                f"Final Score: {self.score}",
+                screen_w / 2 - 160,
+                screen_h / 2 -10,
+                color=arcade.color.WHITE,
+                font_size = 24,
+                font_name="Pixelated Elegance",
+                anchor_y = "center"
+            )
+            arcade.draw_text(
+                "Press ESC to quit",
+                screen_w / 2,
+                screen_h / 2 - 80,
+                color=arcade.color.LIGHT_GRAY,
+                font_size=16,
+                font_name = "Pixelated Elegance",
+                anchor_x="center"
+            )
 
     
     # from better keyboard controls
@@ -482,6 +515,7 @@ class GameView(arcade.Window):
                         self.npc_options = []
                         self.selected_option = 0
                         self.dialogue_waiting_close = True
+                        self.trigger_end_on_followups = True
                     else:
                         #the other option is leave, so it is fine as it is
                         self.in_dialogue = False
@@ -525,6 +559,8 @@ class GameView(arcade.Window):
                         self.player_sprite.change_y = 0
                         self.update_player_speed()
                         break
+        if self.show_end_screen and key==arcade.key.ESCAPE:
+            arcade.exit()
 
 
 
