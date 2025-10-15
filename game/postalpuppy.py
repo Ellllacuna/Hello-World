@@ -61,6 +61,9 @@ class GameView(arcade.Window):
         # When non-empty, E/Enter will advance these follow-up lines
         # before finally closing the dialogue.
         self.dialogue_followups = []
+        # End-screen controls
+        self.trigger_end_on_followups = False
+        self.show_end_screen = False
         
 
 
@@ -434,11 +437,17 @@ class GameView(arcade.Window):
                     # If there are follow-up lines, advance to the next one.
                     if self.dialogue_followups:
                         self.npc_text = self.dialogue_followups.pop(0)
-                        # Keep dialogue_waiting_close True so E/Enter can
-                        # close after follow-ups are exhausted.
+                        # If followups are exhausted now, check whether we
+                        # should show the end screen (trigger set by a Yes
+                        # response).
                         if not self.dialogue_followups:
-                            # No more follow-ups — next E will close.
-                            pass
+                            if self.trigger_end_on_followups:
+                                # Show end screen overlay and stop dialogue
+                                self.show_end_screen = True
+                                self.show_npc_text = False
+                                self.in_dialogue = False
+                                self.dialogue_waiting_close = False
+                                self.trigger_end_on_followups = False
                     else:
                         # No follow-ups: close the dialogue.
                         self.in_dialogue = False
