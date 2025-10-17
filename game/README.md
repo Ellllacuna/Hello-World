@@ -1,8 +1,8 @@
 # Overview
 
-{Provide a description the game that you wrote. Describe how to play your game.}
+The game is a very simple platformer game. You play as a little puppy that collects mail to return to the friendly bear. The more mail you collect, the higher your score. It features animated sprites, npcs, and collection sounds.
 
-{Describe your purpose for writing this software.}
+The purpose of this software is to demonstrate how Python, and the Arcade library, can be used to create playable video games.
 
 {Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the game being played and a walkthrough of the code.}
 
@@ -10,19 +10,22 @@
 
 # Development Environment
 
-{Describe the tools that you used to develop the software}
+* VS Studio Code
+* Arcade Python Library
+* Tiled (for map planning)
+* Procreate (For sprite creation and animation)
 
-{Describe the programming language that you used and any libraries.}
+
+* Python
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
 * [Python Arcade Library Tutorials](https://api.arcade.academy/en/latest/tutorials/platform_tutorial/step_09.html)
-* [Web Site Name](http://url.link.goes.here)
+* [Python Arcade Library Official Site](https://api.arcade.academy/en/2.6.17/index.html)
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-* Item 1
-* Item 2
-* Item 3
+* Make fun background music
+* Create different levels with different difficulties
+* Fix the camera shakes when the puppy stands on the corners of things
+* Make more variable platforms and sprites
