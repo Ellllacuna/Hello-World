@@ -4,9 +4,8 @@ The game is a very simple platformer game. You play as a little puppy that colle
 
 The purpose of this software is to demonstrate how Python, and the Arcade library, can be used to create playable video games.
 
-{Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the game being played and a walkthrough of the code.}
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/9wyRbRSAtHs)
 
 # Development Environment
 
