@@ -2,13 +2,16 @@ import firebase_admin
 from firebase_admin import credentials, firestore, db
 import os
 from google.cloud.firestore_v1.base_query import FieldFilter, Or
+#gor generating sharable playlist codes
+import random
+import string
 
 #to get rid of the log message when commiting. Nevermind. Does not work. safe to ignore
 os.environ["GRPC_VERBOSITY"] = "ERROR"
 os.environ["GRPC_CPP_LOG_LEVEL"] = "ERROR"
 
 
-
+#credentials with secret json file :O
 cred = credentials.Certificate("playlist-manager-9ad47-firebase-adminsdk-fbsvc-a21a172315.json")
 firebase_admin.initialize_app(cred)
 
@@ -17,21 +20,29 @@ db = firestore.client()
 #helper function to find playlists matching a name and returning them as a list
 def find_playlist():  
     #hopefully will make it so that you can search parts of a playlist name or owner
-    search_term = input("Enter the name or owner of the playlist: ").lower()
-
-    all_playlists = db.collection("playlists").stream()
-
-    playlists = []
-    for p in all_playlists:
-        data = p.to_dict()
-        name = data['name'].lower()
-        owner = data['owner'].lower()
-
-        if search_term in name or search_term in owner:
-            playlists.append(p)
-
+    search_term = input("Enter the name or owner of the playlist (Press Enter to cancel): ").lower()
+    if search_term == "":
+        return
     
-    return playlists
+    else:
+        
+        all_playlists = db.collection("playlists").stream()
+
+        playlists = []
+        for p in all_playlists:
+            data = p.to_dict()
+            name = data['name'].lower()
+            owner = data['owner'].lower()
+
+            if search_term in name or search_term in owner:
+                playlists.append(p)
+
+        
+        return playlists
+
+#generate sharable code for playlists (6 characters long)   
+def generate_code():
+    return "".join(random.choices(string.ascii_letters + string.digits, k=6))
 
 def add_playlist():
     name = input("Enter playlist name: ")
@@ -45,16 +56,61 @@ def add_playlist():
         artist = input("Enter artist name: ")
         print()
         songs.append({"title": title, "artist": artist})
+    
+    share_id = generate_code()
 
     doc_ref = db.collection("playlists").document()
     doc_ref.set({
         "name": name,
         "owner": owner,
-        "songs": songs
+        "songs": songs,
+        "share_id": share_id
     })
     print(f"Playlist '{name}' added.")
+    print(f"Shareable code: {share_id}")
+
+
+def view_shared_playlist():
+    code = input("Enter the share code of the playlist: ").strip()
+    if not code:
+        print("No code entered.")
+        return
+    
+    results = db.collection("playlists").where("share_id", "==", code).limit(1).stream()
+    #saves the first result found with the matching share code
+
+    playlist = None
+    for r in results:
+        playlist = r.to_dict()
+        break
+
+    if not playlist:
+        print("No playlist foundw with that share code.")
+        return
+    
+    print(f"\nPlaylist: {playlist['name']} by {playlist['owner']}")
+    print("Songs:")
+    for song in playlist["songs"]:
+        print(f" - {song['title']} by {song['artist']}")
+    print()
+    input("Press Enter to return to the menu...")
+    return
+
+#return the share code of already existing playlists
+def get_share_code():
+    playlist = find_playlist()
+
+    for i,p in enumerate(playlist, start=1):
+        data = p.to_dict()
+        print(f"\n{i}. {data['name']} by {data['owner']}")
+        print(f"Share code: {data['share_id']}\n")
+    
+    print()
+    input("Press Enter to return to the menu...")
+    return
 
 def get_playlists():
+    #not included in find_playlists function because it does not need a search term
     print("\n All playlists:\n")
     playlists = db.collection("playlists").stream()
     for i,p in enumerate(playlists, start=1):
@@ -174,7 +230,7 @@ def delete_playlist():
         if 1 <= choice <= len(playlists):
             chosen = playlists[choice - 1]
             db.collection("playlists").document(chosen.id).delete()
-            print(f"Deleted playlist '{chosen.get_dict()['name']}' (owned by {chosen.to_dict()['owner']})")
+            print(f"Deleted playlist '{chosen.to_dict()['name']}' (owned by {chosen.to_dict()['owner']})")
         else:
             print("invalid choice")
 
@@ -187,7 +243,9 @@ def main():
         print("4. Add Song to Playlist")
         print("5. Delete Song from Playlist")
         print("6. Delete Playlist")
-        print("7. Exit")
+        print("7. Search Playlist by Share Code")
+        print("8. Get Share Code for Playlist")
+        print("9. Exit")
 
         choice = input("Choose an option: ")
 
@@ -204,6 +262,10 @@ def main():
         elif choice == "6":
             delete_playlist()
         elif choice == "7":
+            view_shared_playlist()
+        elif choice == "8":
+            get_share_code()
+        elif choice == "9":
             print("Thank you for using the Playlist Manager!")
             break
         else:
