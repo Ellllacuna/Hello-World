@@ -206,7 +206,7 @@ def delete_song_from_playlist():
                 db.collection("playlists").document(chosen.id).update({
                     "songs": firestore.ArrayRemove([song_to_delete])
                 })
-                print(f"Deleted '{song_to_delete.to_dict()['title']}' from '{data['name']}'")
+                print(f"Deleted '{song_to_delete['title']}' from '{data['name']}'")
             else:
                 input("Invalid song choice, Press Enter to return to the main menu.")
                 return

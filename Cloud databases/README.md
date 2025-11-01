@@ -1,38 +1,42 @@
 # Overview
 
-{Important! Do not say in this section that this is college assignment. Talk about what you are trying to accomplish as a software engineer to further your learning.}
 
-{Provide a description of the software that you wrote and how it integrates with a Cloud Database. Describe how to use your program.}
+This software allows users to view, edit, and share playlist that are stored in a Firebase database. Running the python program will bring up a list of options that the user can use to interact with, change, and share music playlists.
 
-{Describe your purpose for writing this software.}
+It demonstrates how Python can be used to interact with a cloud based database. Every change made with the python code will reflect on the actual state of the database in real time. This would allow multiple people to work on the database at the same time if they so desired.
+
 
 {Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running, a walkthrough of the code, and a view of the cloud database.}
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://www.youtube.com/watch?v=OVgPHim6zZI)
 
 # Cloud Database
 
 {Describe the cloud database you are using.}
 
-{Describe the structure of the database that you created.}
+This cloud database uses Firestore Firebase. It is a serverless, cloud-based NoSQL database.
+
+Because this database is NoSQL, there are no traditional tables and data rows. There is one collection of playlists. Each playlist is identified by an auto generated document id, and contains identifing information such as the playlist name, owner, share id, and song information.
 
 # Development Environment
 
-{Describe the tools that you used to develop the software}
 
-{Describe the programming language that you used and any libraries.}
+- VS Studio Code
+- Google's Firestore Cloud Database
+- Firebase_admin python Library
+- google.cloud.firestore Library
+
+
+- Python
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
 
 - [Firebase Fundamentals Documentation](https://firebase.google.com/docs/guides)
-- [Web Site Name](http://url.link.goes.here)
+- [Firestore Code Samples](https://cloud.google.com/firestore/docs/samples)
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-
-- Item 1
-- Item 2
-- Item 3
+- Improve the sharability of the playlists
+- Create a user log in, so only the owner of the playlist can change their lists
+- Find a way to stop the warnings from printing every time the code interacts with the database 
