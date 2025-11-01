@@ -5,14 +5,10 @@ This software allows users to view, edit, and share playlist that are stored in 
 
 It demonstrates how Python can be used to interact with a cloud based database. Every change made with the python code will reflect on the actual state of the database in real time. This would allow multiple people to work on the database at the same time if they so desired.
 
-
-{Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running, a walkthrough of the code, and a view of the cloud database.}
-
 [Software Demo Video](https://www.youtube.com/watch?v=OVgPHim6zZI)
 
 # Cloud Database
 
-{Describe the cloud database you are using.}
 
 This cloud database uses Firestore Firebase. It is a serverless, cloud-based NoSQL database.
 
