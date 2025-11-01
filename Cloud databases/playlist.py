@@ -5,6 +5,9 @@ from google.cloud.firestore_v1.base_query import FieldFilter, Or
 #gor generating sharable playlist codes
 import random
 import string
+#for listening to changes in the database
+import threading
+import time
 
 #to get rid of the log message when commiting. Nevermind. Does not work. safe to ignore
 os.environ["GRPC_VERBOSITY"] = "ERROR"
@@ -16,6 +19,35 @@ cred = credentials.Certificate("playlist-manager-9ad47-firebase-adminsdk-fbsvc-a
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+
+first_snapshot = True
+
+# function for listening to changes in the database
+def on_playlist_change(col_snapshot, changes, read_time):
+    global first_snapshot
+
+    #skips first snapshot to avoid duplicate messages
+    if first_snapshot:
+        first_snapshot = False
+        return
+
+    print("\n=== Playlist Database Updated ===\n")
+    for change in changes:
+        #if the change is an addition of a new playlist
+        if change.type.name == 'ADDED':
+            print(f"New playlist added: {change.document.to_dict()['name']}")
+        #if the change is a modification of an existing playlist
+        elif change.type.name == 'MODIFIED':
+            print(f"Playlist modified: {change.document.to_dict()['name']}")
+        #if the change is a deletion of a playlist
+        elif change.type.name == 'REMOVED':
+            print(f"Playlist removed: {change.document.to_dict()['name']}")
+    print("\nPress ENTER to refresh or continue your action...")
+
+#start listener function
+def start_listener():
+    print("Listening for playlist changes...")
+    db.collection("playlists").on_snapshot(on_playlist_change)
 
 #helper function to find playlists matching a name and returning them as a list
 def find_playlist():  
@@ -269,7 +301,18 @@ def main():
             print("Thank you for using the Playlist Manager!")
             break
         else:
-            print("Invalid option.")
+            print("\n=================================")
+
 
 if __name__ == "__main__":
+    #use threads to run the listener in the background
+    listener_thread = threading.Thread(target=start_listener, daemon=True)
+    listener_thread.start()
+    time.sleep(0.5) #help clear up confusing print order
+
+    print("\n=================================")
+    print("Firestore Listener is active!")
+    print("\n=================================")
+    input("Press Enter to start the Playlist Manager...")
+
     main()
