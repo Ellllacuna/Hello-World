@@ -48,6 +48,7 @@ namespace TextAdventure
             var throneRoom = new Room("Throne Room", "A grand chamber with a now red carpet. You think it used to be white");
             var royalChamber = new Room("Royal Chamber", "The final door. You hope the Prince is here.");
             var kitchen = new Room("Kitchen", "A good place to resupply");
+            var pantry = new Room("Pantry", "It's been picked pretty bare. But there might be something laying around.");
 
             //sets the royal chamber as the final room
             royalChamber.IsFinalRoom = true;
@@ -68,15 +69,23 @@ namespace TextAdventure
             throneRoom.Exits["up"] = royalChamber;
             royalChamber.Exits["down"] = throneRoom;
 
+            kitchen.Exits["east"] = courtyard;
+            courtyard.Exits["west"] = kitchen;
+
+            pantry.Exits["south"] = kitchen;
+            kitchen.Exits["north"] = pantry;
+
             // fill the rooms with items
             armory.Items.Add(new Weapon("Iron Sword", "A little dull. Cracked at the edges, you think you know why the insurgents left it.","A dull sword lies abandoned in the corner." ,10));
             dungeon.Items.Add(new HealthPotion());
             throneRoom.Items.Add(new Key());
             corridor.Items.Add(new Armor("Iron Cuirass", "It has a hole in the side.", "It glints in the candlelight. You could pull it off the body of your former colleague.", 20));
             corridor.Items.Add(new Weapon("Steel Dagger", "A sharp steel dagger.", "All you can see is the blood-soaked handle. You hope it will still be intact after you pull it from the corpse.", 8));
+            kitchen.Items.Add(new Armor("Sturdy Helmet", "It has some dents, but is otherwise intact", "A bandit's body lies on the stone floor, her helmet rolled to the side.", 15));
 
             // populate enemies
             dungeon.Enemy = new Bandit();
+            kitchen.Enemy = new Bandit();
             throneRoom.Enemy = new Sorcerer();
 
             // store room variables
