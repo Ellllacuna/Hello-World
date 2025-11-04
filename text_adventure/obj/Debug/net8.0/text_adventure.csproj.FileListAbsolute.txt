@@ -1,0 +1,29 @@
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\bin\Debug\net8.0\text_adventure.exe
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\bin\Debug\net8.0\text_adventure.deps.json
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\bin\Debug\net8.0\text_adventure.runtimeconfig.json
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\bin\Debug\net8.0\text_adventure.dll
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\bin\Debug\net8.0\text_adventure.pdb
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\text_adventure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\text_adventure.AssemblyInfoInputs.cache
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\text_adventure.AssemblyInfo.cs
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\text_adventure.csproj.CoreCompileInputs.cache
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\text_adventure.dll
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\refint\text_adventure.dll
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\text_adventure.pdb
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\text_adventure.genruntimeconfig.cache
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\text_adventure\obj\Debug\net8.0\ref\text_adventure.dll
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\bin\Debug\net8.0\text_adventure.exe
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\bin\Debug\net8.0\text_adventure.deps.json
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\bin\Debug\net8.0\text_adventure.runtimeconfig.json
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\bin\Debug\net8.0\text_adventure.dll
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\bin\Debug\net8.0\text_adventure.pdb
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.AssemblyInfoInputs.cache
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.AssemblyInfo.cs
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.csproj.CoreCompileInputs.cache
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.sourcelink.json
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.dll
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\refint\text_adventure.dll
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.pdb
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\text_adventure.genruntimeconfig.cache
+C:\Users\vunde\OneDrive\Documents\school\CSE 310\Hello World\text_adventure\obj\Debug\net8.0\ref\text_adventure.dll
