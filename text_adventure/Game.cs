@@ -19,13 +19,21 @@ namespace TextAdventure
 
         public void Start()
         {
-            Console.WriteLine($"You are a loyal member of the Royal Guard.\n"
-                + $"A violent coup has plunged the palace into chaos, \n"
-                + $"and the royal family has been dethroned.\n"
+            Console.WriteLine($"You are a loyal member of the Royal Guard. "
+                + $"A violent coup has plunged the palace into chaos, "
+                + $"and the royal family has been dethroned. "
                 + $"As far as you know, the Prince is the only survivor.");
-            Console.Write("Enter your name, brave guard: ");
+            Console.WriteLine("\nYou have been captured and imprisoned in the dungeon. Breaking out of the cell was easy enough, but now you have to find the Prince.");
+            Console.Write("\nEnter your name, brave guard: ");
             string name = Console.ReadLine();
             Player = new Player(name);
+
+            if (Player.Name == "debug")
+            {
+                Console.WriteLine("debug mode: unlocked");
+                Player.Health = 100;
+                Player.AttackPower = 100;
+            }
 
             SetUpWorld();
 
@@ -49,6 +57,8 @@ namespace TextAdventure
             var royalChamber = new Room("Royal Chamber", "The final door. You hope the Prince is here.");
             var kitchen = new Room("Kitchen", "A good place to resupply");
             var pantry = new Room("Pantry", "It's been picked pretty bare. But there might be something laying around.");
+            var entryHall = new Room("Entry Hall", "The windows have been broken and there are still puddles of dried blood on the floor, but the entry hall is still grand.");
+            var garden = new Room("Garden", "The grass is still green, though the flowers are beginning to wilt.");
 
             //sets the royal chamber as the final room
             royalChamber.IsFinalRoom = true;
@@ -75,18 +85,31 @@ namespace TextAdventure
             pantry.Exits["south"] = kitchen;
             kitchen.Exits["north"] = pantry;
 
+            courtyard.Exits["south"] = entryHall;
+            entryHall.Exits["north"] = courtyard;
+
+            entryHall.Exits["south"] = garden;
+            garden.Exits["north"] = entryHall;
+
+
+
             // fill the rooms with items
-            armory.Items.Add(new Weapon("Iron Sword", "A little dull. Cracked at the edges, you think you know why the insurgents left it.","A dull sword lies abandoned in the corner." ,10));
-            dungeon.Items.Add(new HealthPotion());
+            armory.Items.Add(new Weapon("Iron Sword", "A little dull. Cracked at the edges, you think you know why the insurgents left it.", "A dull sword lies abandoned in the corner.", 10));
+            dungeon.Items.Add(new HealthPotion("Health Potion", "Restores 30 HP.", "A small red vial rests on the table.", 30));
             throneRoom.Items.Add(new Key());
             corridor.Items.Add(new Armor("Iron Cuirass", "It has a hole in the side.", "It glints in the candlelight. You could pull it off the body of your former colleague.", 20));
             corridor.Items.Add(new Weapon("Steel Dagger", "A sharp steel dagger.", "All you can see is the blood-soaked handle. You hope it will still be intact after you pull it from the corpse.", 8));
             kitchen.Items.Add(new Armor("Sturdy Helmet", "It has some dents, but is otherwise intact", "A bandit's body lies on the stone floor, her helmet rolled to the side.", 15));
+            kitchen.Items.Add(new HealthPotion("Jerky", "Some dried venison, you think.", "The kitchen has been mostly picked clean, but there is a small stash of dried jerky deep in a cupboard.", 10));
+            pantry.Items.Add(new HealthPotion("Old fruit", "This fruit looks really old, like really old. You're not sure it's safe to eat", "A basket of wrinkled fuits sits in the corner. Each fruit is speckled with some sort of black, fuzzy, substance.", -10));
+            garden.Items.Add(new BuffItem("Poison Plant", "It's a beatiful flower, but you've seen what it can do to person if ingested. You might be able to use that to your advantage.", "You see a small, dark flower amid the wilting garden. You saw a servant child eat one once. They died.", 10, 2));
 
             // populate enemies
             dungeon.Enemy = new Bandit();
             kitchen.Enemy = new Bandit();
             throneRoom.Enemy = new Sorcerer();
+            garden.Enemy = new Sorcerer();
+            garden.Enemy = new Bandit();
 
             // store room variables
             rooms["courtyard"] = courtyard;
@@ -94,9 +117,13 @@ namespace TextAdventure
             rooms["dungeon"] = dungeon;
             rooms["throneroom"] = throneRoom;
             rooms["royalchamber"] = royalChamber;
+            rooms["kitchen"] = kitchen;
+            rooms["pantry"] = pantry;
+            rooms["entryhall"] = entryHall;
+            rooms["garden"] = garden;
 
             // start at the courtyard
-            CurrentRoom = courtyard;
+            CurrentRoom = dungeon;
 
             //lock the door to the royal chamber
             royalChamber.Locked = true;
@@ -187,7 +214,8 @@ namespace TextAdventure
             Console.WriteLine("=====================================");
             Console.WriteLine("\nPress Enter to exit...");
             Console.ReadLine();
-        
+            Environment.Exit(0);
+
         }
     }
 }

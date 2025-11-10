@@ -1,12 +1,15 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TextAdventure;
-
 class GameManager
 {
-    public static Game CurrentGame { get; private set; }
+    public static Game? CurrentGame { get; private set; }
     private Game game;
     private bool isRunning = true;
+
+    Random random = new Random();
 
     public GameManager(Game game)
     {
@@ -36,7 +39,7 @@ class GameManager
         string[] parts = input.Split(' ', 2);
         // the first part is the command (eg. "go","look" ect..)
         string command = parts[0];
-        // if the command has no second part, it assigns it a blank string as argument
+        // if the command has no second part, it assigns it a blank string as argument, otherwise is just parts[1]
         string argument = parts.Length > 1 ? parts[1] : "";
 
         //like an if-else statement. give it a list of cases, and which code to execute
@@ -67,6 +70,7 @@ class GameManager
                 break;
 
             case "use":
+            case "equip":
                 UseItem(argument);
                 break;
 
@@ -133,15 +137,29 @@ class GameManager
         if (enemy.Health <= 0)
         {
             Console.WriteLine($"You defeated the {enemy.Name}. One less enemy in your path.");
+            //if the player has an item with a damage buff equiped, decrements the battle counter
+            if (game.Player.EquippedWeapon != null)
+            {
+                game.Player.EquippedWeapon.BuffBattleCountdown();
+            }
 
             if (enemy.Loot.Count > 0)
             {
                 Console.WriteLine($"The {enemy.Name} dropped:");
-                foreach (var item in enemy.Loot)
+                // foreach (var item in enemy.Loot)
+                // {
+                //     Console.WriteLine($"- {item.Name}");
+                //     game.CurrentRoom.Items.Add(item);
+                // }
+                int numDrops = random.Next(1, enemy.Loot.Count + 1);
+                var randomizedLoot = enemy.Loot.OrderBy(x => random.Next()).Take(numDrops).ToList();
+
+                foreach (var item in randomizedLoot)
                 {
                     Console.WriteLine($"- {item.Name}");
                     game.CurrentRoom.Items.Add(item);
                 }
+                
             }
 
             if (enemy is FinalBoss)
@@ -162,5 +180,16 @@ class GameManager
     {
         Console.WriteLine($"Health: {game.Player.Health}");
         Console.WriteLine($"Attack Power: {game.Player.AttackPower}");
+
+        if (game.Player.EquippedWeapon != null)
+        {
+            var weapon = game.Player.EquippedWeapon;
+            //shows the temporary buff if the player has any
+            if (weapon.TemporaryBuff > 0 && weapon.BuffBattleTimer > 0)
+            {
+                Console.WriteLine($"Item Buff: +{weapon.TemporaryBuff} Attack Power");
+                Console.WriteLine($"Buff Duration: {weapon.BuffBattleTimer} Battles");
+            }
+        }
     }
 }

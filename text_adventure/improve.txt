@@ -1,0 +1,12 @@
+1. * add temporary buffs to the stats screen, either as an additional stat or as
+    a damage additiona
+3. * figure out a way to quit once the game ends
+4. * put in the duration of the buffs somewhere
+5. add some encounter to the entry hall
+4. same to garden
+5. test with multiple enemies in one room. See how that works.
+6. figure out something with the traitor's sword? right now it just shows as dropped, but there is no point in 
+    equipping it, maybe have some sort of special marker and scene if you equip his sword?
+7. Add a feature in where you have to choose to free the prince, right now it goes straight into the ending
+    once the traitor dies.
+8. * give variable drops to enemies, like a random chance rng thing

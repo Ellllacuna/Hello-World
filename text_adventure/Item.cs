@@ -22,15 +22,54 @@ abstract class Item
 // subclasses for items
 
 class HealthPotion : Item
+//can be used for health potions or for food
 {
-    // inits health potion, restores 10 health
-    public HealthPotion() : base("Health Potion", "Restores 30 HP.", "A small red vial rests on the table.") { }
+    public int Restoration { get; }
+    public HealthPotion(string name, string description, string roomDescription, int restoration) : base(name, description, roomDescription)
+    {
+        Restoration = restoration;
+    }
 
     public override void Use(Player player)
     {
-        Console.WriteLine("You drink the potion and feel rejuvenated.");
-        player.Health += 30;
+        //if the item heals or hurts you
+        if (Restoration >= 0)
+        {
+            Console.WriteLine($"You use the {Name} and feel rejuvenated. You restore {Restoration} HP.");
+        }
+        else
+        {
+            Console.WriteLine($"You use the {Name} and feel... bad. It hurts you. You lose {-Restoration} HP.");
+        }
+        player.Health += Restoration;
         player.Inventory.Remove(this);
+    }
+}
+
+class BuffItem : Item
+{
+    public int DamageBuff { get; }
+    public int Duration { get; }
+    public BuffItem(string name, string description, string roomDescription, int damageBuff, int duration = 2) : base(name, description, roomDescription)
+    {
+        DamageBuff = damageBuff;
+        Duration = duration;
+    }
+    public override void Use(Player player)
+    {
+        //gives damage buff to a specific item, not to the player itself
+        var weapon = player.EquippedWeapon;
+
+        if (weapon != null)
+        {
+            weapon.ApplyBuff(DamageBuff, Duration);
+            Console.WriteLine($"{weapon.Name}'s damage has increased. It won't last forever.");
+            player.Inventory.Remove(this);
+        }
+        else
+        {
+            Console.WriteLine("You can't use this item on your hands.");
+        }
     }
 }
 
@@ -59,7 +98,10 @@ class Key : Item
 
 class Weapon : Item
 {
-    public int Damage { get; }
+    public int Damage { get; set; }
+    //for damage buffs
+    public int? TemporaryBuff { get; private set; } = null;
+    public int? BuffBattleTimer { get; private set; } = null;
     public Weapon(string name, string description, string roomDescription, int damage) : base(name, description, roomDescription)
     {
         Damage = damage;
@@ -68,6 +110,28 @@ class Weapon : Item
     public override void Use(Player player)
     {
         player.EquipWeapon(this);
+    }
+
+    //for applying a temorary buff to items
+    public void ApplyBuff(int buffAmount, int battleCount)
+    {
+        TemporaryBuff = buffAmount;
+        BuffBattleTimer = battleCount;
+        Damage += buffAmount;
+    }
+
+    public void BuffBattleCountdown()
+    {
+        if (BuffBattleTimer > 0)
+        {
+            BuffBattleTimer--;
+            if (BuffBattleTimer == 0 && TemporaryBuff.HasValue)
+            {
+                Damage -= TemporaryBuff.Value;
+                TemporaryBuff = null;
+                Console.WriteLine("The item has lost it's potency.");
+            }
+        }
     }
 }
 

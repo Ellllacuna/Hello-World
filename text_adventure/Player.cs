@@ -5,7 +5,7 @@ class Player
     public int Health { get; set; } = 30;
     // player attack power is set at a base of 5
     public int BaseAttackPower { get; } = 5;
-    public int AttackPower { get;  private set; }
+    public int AttackPower { get;  set; }
     // list of items in player inventory
     public List<Item> Inventory { get; } = new();
 
