@@ -39,6 +39,7 @@ namespace TextAdventure
 
             Console.WriteLine("\n=================================\n");
             Console.WriteLine($"\nWelcome, {Player.Name}. The Prince is being held somewhere in the Castle. You must find him!");
+            Console.WriteLine("Use commands like 'attack _', 'go _', 'equip _', or similar phrases to interact with the world.");
             CurrentRoom.Enter();
 
             GameManager gameManager = new GameManager(this);
@@ -103,13 +104,15 @@ namespace TextAdventure
             kitchen.Items.Add(new HealthPotion("Jerky", "Some dried venison, you think.", "The kitchen has been mostly picked clean, but there is a small stash of dried jerky deep in a cupboard.", 10));
             pantry.Items.Add(new HealthPotion("Old fruit", "This fruit looks really old, like really old. You're not sure it's safe to eat", "A basket of wrinkled fuits sits in the corner. Each fruit is speckled with some sort of black, fuzzy, substance.", -10));
             garden.Items.Add(new BuffItem("Poison Plant", "It's a beatiful flower, but you've seen what it can do to person if ingested. You might be able to use that to your advantage.", "You see a small, dark flower amid the wilting garden. You saw a servant child eat one once. They died.", 10, 2));
+            entryHall.Items.Add(new Armor("Leather Breeches", "A pair of sturdy leather breeches", "The body of an insurgent lies propped up against the wall. If you want you could take his pants.", 5));
+            entryHall.Items.Add(new HealthPotion("Chunk of Meat", "A chunk of unkown meat. It stinks, why did you pick this up?", "A hunk of what looks to be rotting flesh lays on the floor. You are unsure if it was meant to be eaten, or if it once a part of someone before the coup.", -50));
 
             // populate enemies
-            dungeon.Enemy = new Bandit();
-            kitchen.Enemy = new Bandit();
-            throneRoom.Enemy = new Sorcerer();
-            garden.Enemy = new Sorcerer();
-            garden.Enemy = new Bandit();
+            dungeon.Enemies.Add(new Bandit());
+            kitchen.Enemies.Add(new Bandit());
+            throneRoom.Enemies.Add(new Sorcerer());
+            garden.Enemies.Add(new Sorcerer());
+            garden.Enemies.Add(new Bandit());
 
             // store room variables
             rooms["courtyard"] = courtyard;
@@ -180,7 +183,7 @@ namespace TextAdventure
             Console.WriteLine("'You have finally come.' He raises his sword, the same one that took the lives the the King and Queen, and levels it at your chest.");
             Pause();
             Console.WriteLine("'I wondered when you would come save your precious Prince. You were always the most loyal of us. Following their every whim like a dog,'");
-            Console.WriteLine("He snarls.");
+            Console.WriteLine("the traitor snarls.");
 
             var finalBoss = new FinalBoss("Traitor", 80, 12);
 
@@ -188,7 +191,7 @@ namespace TextAdventure
                 new Weapon("Knight's Broadsword", "The murderous blade the killed the Kind and Queen", "It gleams in the soft light case by the moon. It's beautiful, but you can't help but remember what it has done.", 30)
             );
 
-            CurrentRoom.Enemy = finalBoss;
+            CurrentRoom.Enemies.Add(finalBoss);
         }
 
         public void TriggerEnding()
@@ -199,13 +202,13 @@ namespace TextAdventure
             Pause();
             Console.WriteLine("As the light fades from his eyes, you look past him and see the Prince, beaten, bound, and gagged, but alive. Blessedly alive.");
             Pause();
-            Console.WriteLine("You rush to him and cut his bonds. As the gag falls out of his mouth, he utters his quiet thanks, voice hoarse from disuse.");
+            Console.WriteLine("You rush to him and cut his bonds. As the gag falls from of his mouth, he utters his quiet thanks, voice hoarse from disuse.");
             Pause();
-            Console.WriteLine("You help him to his feet. The two of you stand in amidst the wreckage of your kingdom.");
+            Console.WriteLine("You help him to his feet. The two of you stand in amidst the wreckage of the kingdom.");
             Pause();
             Console.WriteLine("For the first time since this all began, you feel hope. There are many more enemies that need killing,");
             Pause();
-            Console.WriteLine("But with the rescue of the Prince and the slaying of the traitor, you have dealt a serious blow to the enemy.");
+            Console.WriteLine("But with the rescue of the Prince and the slaying of the traitor, you think maybe there's a chance to restore what you have lost.");
 
             Pause();
             Pause();

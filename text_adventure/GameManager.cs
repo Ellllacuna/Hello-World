@@ -50,6 +50,7 @@ class GameManager
                 break;
 
             case "go":
+            case "walk":
                 // if they just said to go, asks where. can't go with no direction
                 if (argument == "")
                 {
@@ -62,20 +63,23 @@ class GameManager
                 break;
 
             case "take":
+            case "grab":
                 TakeItem(argument);
                 break;
 
             case "inventory":
+            case "bag":
                 game.Player.ShowInventory();
                 break;
 
             case "use":
             case "equip":
+            case "eat":
                 UseItem(argument);
                 break;
 
             case "attack":
-                AttackEnemy();
+                AttackEnemy(argument);
                 break;
 
             case "quit":
@@ -84,6 +88,8 @@ class GameManager
                 break;
 
             case "stats":
+            case "statistics":
+            case "player":
                 ShowStats();
                 break;
 
@@ -121,38 +127,50 @@ class GameManager
         item.Use(game.Player);
     }
 
-    private void AttackEnemy()
+    private void AttackEnemy(string targetName)
     {
-        var enemy = game.CurrentRoom.Enemy;
-        if (enemy == null)
+        var enemies = game.CurrentRoom.Enemies;
+
+        if (enemies.Count == 0)
         {
             Console.WriteLine("There's no one here to fight.");
             return;
         }
 
-        Console.WriteLine($"You attack the {enemy.Name}.");
-        enemy.Health -= game.Player.AttackPower;
+        //returns the first enemy in the list that matches the conditions (in this case, matches the targetName)
+        //allows the player to specify which enemy they want to attack
+        Enemy? targetEnemy = enemies.FirstOrDefault(e => e.Name.Equals(targetName, StringComparison.OrdinalIgnoreCase));
+
+        if (targetEnemy == null)
+        {
+            Console.WriteLine($"There's no {targetName} here");
+            return;
+        }
+
+        Console.WriteLine($"You attack the {targetEnemy.Name}.");
+        targetEnemy.Health -= game.Player.AttackPower;
 
         //enemy dead
-        if (enemy.Health <= 0)
+        if (targetEnemy.Health <= 0)
         {
-            Console.WriteLine($"You defeated the {enemy.Name}. One less enemy in your path.");
+            Console.WriteLine();
+            Console.WriteLine($"You defeated the {targetEnemy.Name}. One less enemy in your path.");
             //if the player has an item with a damage buff equiped, decrements the battle counter
             if (game.Player.EquippedWeapon != null)
             {
                 game.Player.EquippedWeapon.BuffBattleCountdown();
             }
 
-            if (enemy.Loot.Count > 0)
+            if (targetEnemy.Loot.Count > 0)
             {
-                Console.WriteLine($"The {enemy.Name} dropped:");
+                Console.WriteLine($"The {targetEnemy.Name} dropped:");
                 // foreach (var item in enemy.Loot)
                 // {
                 //     Console.WriteLine($"- {item.Name}");
                 //     game.CurrentRoom.Items.Add(item);
                 // }
-                int numDrops = random.Next(1, enemy.Loot.Count + 1);
-                var randomizedLoot = enemy.Loot.OrderBy(x => random.Next()).Take(numDrops).ToList();
+                int numDrops = random.Next(1, targetEnemy.Loot.Count + 1);
+                var randomizedLoot = targetEnemy.Loot.OrderBy(x => random.Next()).Take(numDrops).ToList();
 
                 foreach (var item in randomizedLoot)
                 {
@@ -162,16 +180,21 @@ class GameManager
                 
             }
 
-            if (enemy is FinalBoss)
+            if (targetEnemy is FinalBoss)
             {
                 game.TriggerEnding();
                 return;
             }
-            game.CurrentRoom.Enemy = null;
+            enemies.Remove(targetEnemy);
+
+            if (enemies.Count == 0)
+            {
+                Console.WriteLine("All enemies in this room have been defeated.");
+            }
         }
         else
         {
-            enemy.Attack(game.Player);
+            targetEnemy.Attack(game.Player);
             Console.WriteLine($"Your HP: {game.Player.Health}");
         }
     }

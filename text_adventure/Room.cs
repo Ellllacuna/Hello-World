@@ -6,7 +6,7 @@ class Room
     public string Description { get; }
     public Dictionary<string, Room> Exits { get; } = new();
     public List<Item> Items { get; } = new();
-    public Enemy? Enemy { get; set; }
+    public List<Enemy> Enemies { get; set; } = new List<Enemy>();
 
     //for the locked door
     public bool Locked { get; set; } = false;
@@ -34,9 +34,13 @@ class Room
             }
             Console.WriteLine();
         }
-        if (Enemy is not null)
+        if (Enemies.Count > 0)
         {
-            Console.WriteLine($"An enemy appears: {Enemy.Name}");
+            foreach (var enemy in Enemies)
+            {
+                Console.WriteLine($"An enemy appears: {enemy.Name}\n    (HP: {enemy.Health})");
+                Console.WriteLine();
+            }
             Console.WriteLine();
         }
 
