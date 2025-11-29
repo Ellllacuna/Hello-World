@@ -1,0 +1,29 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+
+<body class="dashboard-page">
+    <header id="dashboard-header">
+        <h1>Your Files</h1>
+        <div class="header-button">
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'upload' %}">Upload File</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <div id="file-grid">
+        <ul>
+            {% for f in files %}
+            <li class="file-card">
+                <a href="{{ f.file.url }}">{{ f.file.name }}</a>
+                <a id="delete" href="{% url 'delete_file' f.id %}">Delete</a>
+            </li>
+            {% empty %}
+            <li>No files uploaded yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>

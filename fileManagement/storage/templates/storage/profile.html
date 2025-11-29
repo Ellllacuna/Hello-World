@@ -1,0 +1,83 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+
+<body class="dashboard-page">
+    <header id="dashboard-header">
+        <h1>User Profile</h1>
+        <div class="header-button">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <div class="profile-stats">
+        <div class="stat-card">
+            <h3>Total Files</h3>
+            <p>{{ total_files }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Total Storage Used</h3>
+            <P>{{ total_storage }} bytes</P>
+        </div>
+
+        <div class="stat-card">
+            <h3>Upload Streak</h3>
+            {% if streak == 0 %}
+                <p>0 days</p>
+            {% else %}
+                <p>{{ streak }} day(s)</p>
+            {% endif %}
+        </div>
+
+        <div class="stat-card">
+            <h3>Most Recent Upload</h3>
+            {% if most_recent %}
+                <p>{{ most_recent.file.name }}</p>
+                <p>{{ most_recent.uploaded_at }}</p>
+            {% else %}
+                <p>No uploads yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2>Upload Activity</h2>
+    <canvas id="upload-chart"></canvas>
+
+    {% load static %}
+    {{ chart_labels|json_script:"chart-labels" }}
+    {{ chart_values|json_script:"chart-values" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartLabels = JSON.parse(document.getElementById('chart-labels').textContent);
+        const chartValues = JSON.parse(document.getElementById('chart-values').textContent);
+
+
+        const ctx = document.getElementById('upload-chart').getContext('2d');
+        const uploadChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Uploads per Day',
+                    data: chartValues,
+                    backgroundColor: '#5dbaf8'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+    </script>
+
+
+</body>
